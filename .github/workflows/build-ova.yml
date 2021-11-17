@@ -19,7 +19,7 @@ jobs:
       run: ./build-appliance virtualbox 
 
     - name: Get build_name from OVF file
-      run: echo "build_name=$(sh -c \"find . -name '*.ovf' | xargs basename -s '.ovf'\")" >> $GITHUB_ENV
+      run: echo "build_name=$(sh -c "find . -name '*.ovf' | xargs basename -s '.ovf'")" >> $GITHUB_ENV
       working-directory: ./output-virtualbox
 
     - name: Change virtual hardware version
