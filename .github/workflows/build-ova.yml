@@ -15,8 +15,24 @@ jobs:
         path: packer_cache
         key: ${{ runner.os }}-packer
 
-    - name: Build OVA image
+    - name: Build VirtualBox OVF image
       run: ./build-appliance virtualbox 
+
+    - name: Get build_name from OVF file
+      run: echo "build_name=$(sh -c \"find . -name '*.ovf' | xargs basename -s '.ovf'\")" >> $GITHUB_ENV
+      working-directory: ./output-virtualbox
+
+    - name: Change virtual hardware version
+      run: sed -i '' 's/virtualbox-2.2/vmx-13/' ${{ env.build_name }}.ovf
+      working-directory: ./output-virtualbox
+
+    - name: Create OVA manifest
+      run: openssl sha256 *.vmdk *.ovf > ${{ env.build_name }}.mf
+      working-directory: ./output-virtualbox
+
+    - name: Package OVA image
+      run: tar -cvf ${{ env.build_name }}.ova --format=ustar *
+      working-directory: ./output-virtualbox
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
