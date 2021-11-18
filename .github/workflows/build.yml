@@ -1,6 +1,10 @@
-name: build-ova
+name: build
 
-on: [push]
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
 
 jobs:
   build-ova:
